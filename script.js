@@ -1,65 +1,57 @@
-import * as THREE from 'three';
+import * as THREE from 'three'
+import gsap from 'gsap'
+
+console.log(gsap)
 
 // Canvas
-const canvas = document.querySelector('canvas.webgl');
-console.log(canvas);
+const canvas = document.querySelector('canvas.webgl')
 
 // Scene
-const scene = new THREE.Scene();
-
+const scene = new THREE.Scene()
 
 // Object
-const group = new THREE.Group()
-group.position.y = 1
-group.scale.y = 2
-group.rotation.y = 1
-scene.add(group)
-
-const cube1 = new THREE.Mesh(
-    new THREE.BoxGeometry(1,1,1),
-    new THREE.MeshBasicMaterial({ color: 0xff0000 })
-)
-group.add(cube1)
-const cube2 = new THREE.Mesh(
-    new THREE.BoxGeometry(1,1,1),
-    new THREE.MeshBasicMaterial({ color: "blue" })
-)
-cube2.position.x = 2
-group.add(cube2)
-
-const cube3 = new THREE.Mesh(
-    new THREE.BoxGeometry(1,1,1),
-    new THREE.MeshBasicMaterial({ color: "green" })
-)
-cube3.position.x = -2
-group.add(cube3)
-
-//Axes helper: visual aid that displays the three axes of a 3D coordinate system
-//for now we are not using it
-const axesHelper = new THREE.AxesHelper()
-scene.add(axesHelper)
-//Red axis: x
-//Green axis: y
-//Blue axis: z
+const geometry = new THREE.BoxGeometry(1, 1, 1)
+const material = new THREE.MeshBasicMaterial({ color: "yellow" })
+const mesh = new THREE.Mesh(geometry, material)
+scene.add(mesh)
 
 // Sizes
 const sizes = {
     width: 800,
-    height:600
+    height: 600
 }
 
 // Camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
-camera.position.z = 3; // camera position changed to view the object
-scene.add(camera);
-
-//lookAt: method that makes the camera look at a specific position
-
-
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
+camera.position.z = 3
+scene.add(camera)
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
-renderer.setSize(sizes.width, sizes.height);
-renderer.render(scene,camera);
+renderer.setSize(sizes.width, sizes.height)
+
+// Clock
+const clock = new THREE.Clock()
+
+// Animations
+const tick = () =>{
+
+    // Clock
+    const elapsedTime = clock.getElapsedTime()
+    // console.log(elapsedTime)
+    
+    // Update objects
+    camera.position.y = Math.sin(elapsedTime) 
+    camera.position.x = Math.cos(elapsedTime)
+    camera.lookAt(mesh.position)
+
+    // Render
+    renderer.render(scene, camera)
+
+    window.requestAnimationFrame(tick)
+
+}
+
+tick()
